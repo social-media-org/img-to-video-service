@@ -258,7 +258,7 @@ class VideoGeneratorService:
         return frames_data
     
     def _create_static_clip(self, frame: np.ndarray, duration: float) -> VideoClip:
-        """Create a static video clip from a single frame.
+        """Create a static video clip from a single frame (DEPRECATED).
         
         Args:
             frame: Frame as numpy array
@@ -269,6 +269,30 @@ class VideoGeneratorService:
         """
         def make_frame(t):
             return frame
+        
+        return VideoClip(make_frame, duration=duration)
+    
+    def _create_effect_clip(self, 
+                           frame: np.ndarray, 
+                           effect: 'EffectBase',
+                           duration: float) -> VideoClip:
+        """Create a video clip with an effect applied.
+        
+        Args:
+            frame: Original frame (can be any size)
+            effect: Effect instance to apply
+            duration: Duration in seconds
+            
+        Returns:
+            VideoClip with effect applied
+        """
+        def make_frame(t):
+            # Calculate progress (0.0 to 1.0)
+            progress = t / duration if duration > 0 else 0.0
+            progress = max(0.0, min(1.0, progress))  # Clamp to [0, 1]
+            
+            # Apply effect at this progress point
+            return effect.apply(frame, progress, self.resolution)
         
         return VideoClip(make_frame, duration=duration)
     
