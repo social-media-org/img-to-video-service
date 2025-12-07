@@ -480,9 +480,9 @@ ease-out-back: overshoot puis retour (effet rebond)
 
 | Énergie | Transitions |
 |---------|-------------|
-| **Calme** | `cross_dissolve`, `fade_to_black` |
+| **Calme** | `cross_dissolve`, `fade_to_black`, `blur_zoom` |
 | **Modérée** | `zoom_*`, `smooth_zoom`, `wipe_*` |
-| **Énergique** | `flash_white`, `smooth_stretch`, `smooth_flip` |
+| **Énergique** | `flash_white`, `smooth_stretch`, `smooth_flip`, `smooth_spin`, `glitch` |
 
 ---
 
