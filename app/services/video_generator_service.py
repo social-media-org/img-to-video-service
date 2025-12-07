@@ -327,3 +327,12 @@ class VideoGeneratorService:
             List of transition names
         """
         return TransitionRegistry.list_available()
+    
+    @staticmethod
+    def list_available_effects() -> List[str]:
+        """List all available effect types.
+        
+        Returns:
+            List of effect names
+        """
+        return EffectRegistry.list_available()
