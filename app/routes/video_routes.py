@@ -88,3 +88,18 @@ async def list_transitions() -> dict:
         "transitions": transitions,
         "count": len(transitions)
     }
+
+
+@router.get("/effects", response_model=dict)
+async def list_effects() -> dict:
+    """List all available effect types.
+    
+    Returns:
+        Dictionary with available effects
+    """
+    effects = VideoGeneratorService.list_available_effects()
+    
+    return {
+        "effects": effects,
+        "count": len(effects)
+    }
