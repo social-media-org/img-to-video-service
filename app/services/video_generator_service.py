@@ -61,18 +61,15 @@ class VideoGeneratorService:
         self._validate_inputs(images, output_path)
         
         try:
-            # Load and prepare images
-            frames_data = self._load_images(images)
-            
-            # Get transition instance
-            transition = TransitionRegistry.get(transition_type, self.transition_duration)
-            logger.info(f"Using transition: {transition_type}")
+            # Load and prepare images (without resizing - preserve original size)
+            frames_data = self._load_images_without_resize(images)
             
             # Create video clips
             clips = []
             total_duration = 0
             
             for i in range(len(frames_data)):
+                image_config = images[i]
                 frame_data = frames_data[i]
                 
                 # Calculate duration for this image
@@ -86,21 +83,43 @@ class VideoGeneratorService:
                     else:
                         duration = 3.0
                 
-                # Create clip for static image
+                # Get effect for this image
+                effect_name = image_config.effect
+                effect_intensity = image_config.effect_intensity
+                effect = EffectRegistry.get(effect_name, intensity=effect_intensity)
+                logger.info(f"Image {i}: effect='{effect_name}', intensity={effect_intensity}")
+                
+                # Create clip with effect applied
                 if duration > self.transition_duration:
-                    static_duration = duration - self.transition_duration
-                    static_clip = self._create_static_clip(
+                    effect_duration = duration - self.transition_duration
+                    effect_clip = self._create_effect_clip(
                         frame_data['frame'],
-                        static_duration
+                        effect,
+                        effect_duration
                     )
-                    clips.append(static_clip)
-                    total_duration += static_duration
+                    clips.append(effect_clip)
+                    total_duration += effect_duration
                 
                 # Create transition clip (except for last image)
                 if i < len(frames_data) - 1:
+                    # Determine transition type for this image
+                    current_transition_type = image_config.transition_type if image_config.transition_type else transition_type
+                    transition = TransitionRegistry.get(current_transition_type, self.transition_duration)
+                    logger.info(f"Transition {i}->{i+1}: '{current_transition_type}'")
+                    
+                    # For transitions, we need to prepare both frames at the target resolution
+                    # Apply the effect at progress=1.0 (end state) for first frame
+                    frame1_end = effect.apply(frame_data['frame'], 1.0, self.resolution)
+                    
+                    # Apply the next image's effect at progress=0.0 (start state) for second frame
+                    next_effect_name = images[i + 1].effect
+                    next_effect_intensity = images[i + 1].effect_intensity
+                    next_effect = EffectRegistry.get(next_effect_name, intensity=next_effect_intensity)
+                    frame2_start = next_effect.apply(frames_data[i + 1]['frame'], 0.0, self.resolution)
+                    
                     transition_clip = self._create_transition_clip(
-                        frame_data['frame'],
-                        frames_data[i + 1]['frame'],
+                        frame1_end,
+                        frame2_start,
                         transition
                     )
                     clips.append(transition_clip)
