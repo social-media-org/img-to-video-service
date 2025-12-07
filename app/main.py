@@ -12,7 +12,6 @@ from app.core.config import settings
 from app.core import database
 from app.core.exceptions import setup_exception_handlers
 from app.core.logging import get_logger, setup_logging
-from app.routes import audio
 
 # Setup logging
 setup_logging()
@@ -73,7 +72,6 @@ def create_app() -> FastAPI:
         }
 
     # Include routers
-    app.include_router(audio.router, prefix=settings.api_v1_prefix)
 
     return app
 
