@@ -119,7 +119,6 @@ class VideoGeneratorService:
                 fps=self.fps,
                 codec='libx264',
                 audio=False,
-                verbose=False,
                 logger=None
             )
             
