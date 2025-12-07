@@ -159,8 +159,159 @@ class SmoothRightSlideTransition(SmoothSlideTransition):
         super().__init__(duration, direction='right')
 
 
+class SmoothSpinTransition(TransitionBase):
+    """Smooth spin transition with rotation and zoom (TikTok style).
+    
+    Combines rotation and zoom with smooth easing for a dynamic effect.
+    Very popular on TikTok and Instagram Reels.
+    """
+    
+    def apply(self, frame1: np.ndarray, frame2: np.ndarray, progress: float) -> np.ndarray:
+        h, w = frame1.shape[:2]
+        
+        # Smooth easing
+        eased = self._ease_in_out_quad(progress)
+        
+        # Rotation angle (0 to 360 degrees)
+        angle = eased * 360
+        
+        # Zoom factor (1.0 to 1.3)
+        zoom = 1.0 + eased * 0.3
+        
+        # Get rotation matrix
+        center = (w // 2, h // 2)
+        rotation_matrix = cv2.getRotationMatrix2D(center, angle, zoom)
+        
+        # Apply rotation and zoom to frame1
+        rotated_frame1 = cv2.warpAffine(frame1, rotation_matrix, (w, h), 
+                                        borderMode=cv2.BORDER_CONSTANT,
+                                        borderValue=(0, 0, 0))
+        
+        # Blend with frame2 using eased alpha
+        return self.blend_frames(rotated_frame1, frame2, eased)
+    
+    @staticmethod
+    def _ease_in_out_quad(t: float) -> float:
+        """Quadratic easing for smooth acceleration/deceleration."""
+        if t < 0.5:
+            return 2 * t * t
+        else:
+            return 1 - pow(-2 * t + 2, 2) / 2
+
+
+class GlitchTransition(TransitionBase):
+    """Glitch transition with RGB channel separation (modern digital style).
+    
+    Creates a digital glitch effect by separating and shifting RGB channels.
+    Very trendy for tech, gaming, and modern content.
+    """
+    
+    def apply(self, frame1: np.ndarray, frame2: np.ndarray, progress: float) -> np.ndarray:
+        h, w = frame1.shape[:2]
+        
+        # Use ease-in-out for smooth glitch intensity
+        eased = self._ease_in_out_sine(progress)
+        
+        # Glitch is strongest in the middle of the transition
+        glitch_intensity = 1.0 - abs(eased - 0.5) * 2  # 0 -> 1 -> 0
+        
+        # Base blend between frames
+        blended = self.blend_frames(frame1, frame2, eased)
+        
+        # Apply glitch effect if intensity is significant
+        if glitch_intensity > 0.1:
+            # Separate RGB channels
+            b, g, r = cv2.split(blended)
+            
+            # Calculate shift amounts based on intensity
+            shift = int(w * 0.02 * glitch_intensity)  # Max 2% of width
+            
+            # Shift red channel right
+            r_shifted = np.zeros_like(r)
+            if shift < w:
+                r_shifted[:, shift:] = r[:, :w-shift]
+            
+            # Shift blue channel left
+            b_shifted = np.zeros_like(b)
+            if shift < w:
+                b_shifted[:, :w-shift] = b[:, shift:]
+            
+            # Keep green channel as is
+            g_shifted = g
+            
+            # Merge channels back
+            glitched = cv2.merge([b_shifted, g_shifted, r_shifted])
+            
+            # Blend glitched effect with original based on intensity
+            result = self.blend_frames(blended, glitched, glitch_intensity * 0.6)
+            
+            return result
+        else:
+            return blended
+    
+    @staticmethod
+    def _ease_in_out_sine(t: float) -> float:
+        """Sine easing for very smooth transitions."""
+        return -(np.cos(np.pi * t) - 1) / 2
+
+
+class BlurZoomTransition(TransitionBase):
+    """Blur zoom transition with motion blur effect (CapCut style).
+    
+    Combines zoom with directional blur for a professional motion effect.
+    Creates smooth, cinematic transitions.
+    """
+    
+    def apply(self, frame1: np.ndarray, frame2: np.ndarray, progress: float) -> np.ndarray:
+        h, w = frame1.shape[:2]
+        
+        # Smooth easing
+        eased = self._ease_in_out_cubic(progress)
+        
+        # Zoom factor
+        zoom = 1.0 + eased * 0.4
+        
+        # Calculate crop for zoom
+        new_h, new_w = int(h / zoom), int(w / zoom)
+        y1 = (h - new_h) // 2
+        x1 = (w - new_w) // 2
+        
+        # Crop and resize frame1
+        cropped = frame1[y1:y1+new_h, x1:x1+new_w]
+        zoomed_frame1 = cv2.resize(cropped, (w, h))
+        
+        # Apply radial blur effect based on progress
+        # Blur is strongest in the middle of transition
+        blur_intensity = 1.0 - abs(eased - 0.5) * 2  # 0 -> 1 -> 0
+        
+        if blur_intensity > 0.2:
+            # Calculate blur kernel size (must be odd)
+            kernel_size = int(15 * blur_intensity)
+            if kernel_size % 2 == 0:
+                kernel_size += 1
+            kernel_size = max(3, kernel_size)
+            
+            # Apply motion blur
+            zoomed_frame1 = cv2.GaussianBlur(zoomed_frame1, (kernel_size, kernel_size), 0)
+        
+        # Blend with frame2
+        return self.blend_frames(zoomed_frame1, frame2, eased)
+    
+    @staticmethod
+    def _ease_in_out_cubic(t: float) -> float:
+        """Cubic easing for smooth motion."""
+        if t < 0.5:
+            return 4 * t * t * t
+        else:
+            return 1 - pow(-2 * t + 2, 3) / 2
+
+
 # Register transitions
 TransitionRegistry.register('smooth_slide_left', SmoothLeftSlideTransition)
 TransitionRegistry.register('smooth_slide_right', SmoothRightSlideTransition)
 TransitionRegistry.register('smooth_flip', SmoothFlipTransition)
 TransitionRegistry.register('smooth_stretch', SmoothStretchTransition)
+TransitionRegistry.register('smooth_spin', SmoothSpinTransition)
+TransitionRegistry.register('spin', SmoothSpinTransition)  # Alias
+TransitionRegistry.register('glitch', GlitchTransition)
+TransitionRegistry.register('blur_zoom', BlurZoomTransition)
