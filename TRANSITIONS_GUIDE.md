@@ -4,14 +4,14 @@ Ce guide décrit toutes les transitions implémentées avec leurs caractéristiq
 
 ## 📋 Vue d'Ensemble
 
-**16 transitions professionnelles** réparties en 4 catégories:
+**17 transitions professionnelles** réparties en 4 catégories:
 
 | Catégorie | Nombre | Description |
 |-----------|--------|-------------|
-| **Fade** | 5 | Fondus et flashes |
+| **Fade** | 3 | Fondus et flashes |
 | **Zoom** | 3 | Effets de zoom |
 | **Wipe** | 4 | Balayages directionnels |
-| **Smooth** | 4 | Transitions fluides style TikTok/CapCut |
+| **Smooth** | 7 | Transitions fluides style TikTok/CapCut |
 
 ---
 
