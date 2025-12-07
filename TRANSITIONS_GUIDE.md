@@ -369,6 +369,91 @@ ease-in-out-cubic: accélération/décélération cubique
 ease-out-back: overshoot puis retour (effet rebond)
 ```
 
+### 15. `smooth_spin` (alias: `spin`)
+
+**Description:** Rotation fluide avec zoom (très populaire sur TikTok).
+
+**Caractéristiques:**
+- Combine rotation 360° et zoom progressif
+- Easing quadratique pour mouvement naturel
+- Effet dynamique et accrocheur
+- Très tendance sur les réseaux sociaux
+
+**Cas d'usage:**
+- Vidéos TikTok/Instagram Reels
+- Révélations de produits
+- Transitions dynamiques
+- Contenu viral/fun
+
+**Durée recommandée:** 0.5 - 0.8 seconde
+
+```python
+"transition_type": "smooth_spin"
+```
+
+**Paramètres techniques:**
+- Rotation : 0° → 360°
+- Zoom : 1.0 → 1.3
+- Easing : ease-in-out quadratic
+
+---
+
+### 16. `glitch`
+
+**Description:** Effet de glitch digital moderne avec séparation RGB.
+
+**Caractéristiques:**
+- Séparation et décalage des canaux RGB
+- Intensité maximale au milieu de la transition
+- Effet très moderne et technologique
+- Easing sinusoïdal pour fluidité
+
+**Cas d'usage:**
+- Vidéos tech et gaming
+- Contenu futuriste/cyberpunk
+- Transitions stylées modernes
+- Contenu digital/startup
+
+**Durée recommandée:** 0.4 - 0.6 seconde
+
+```python
+"transition_type": "glitch"
+```
+
+**Paramètres techniques:**
+- Décalage RGB : ±2% de la largeur
+- Intensité glitch : 0 → 1 → 0 (pic au milieu)
+- Easing : ease-in-out sine
+
+---
+
+### 17. `blur_zoom`
+
+**Description:** Zoom avec flou de mouvement (style CapCut professionnel).
+
+**Caractéristiques:**
+- Combine zoom progressif et flou gaussien
+- Flou maximal au milieu de la transition
+- Effet cinématique et fluide
+- Easing cubique pour accélération naturelle
+
+**Cas d'usage:**
+- Vidéos professionnelles
+- Montages CapCut/Premiere Pro
+- Transitions cinématiques
+- Vlogs et contenus lifestyle
+
+**Durée recommandée:** 0.6 - 1.0 seconde
+
+```python
+"transition_type": "blur_zoom"
+```
+
+**Paramètres techniques:**
+- Zoom : 1.0 → 1.4
+- Flou : kernel adaptatif (3 à 15px)
+- Easing : ease-in-out cubic
+
 ---
 
 ## 🎯 Guide de Sélection Rapide
