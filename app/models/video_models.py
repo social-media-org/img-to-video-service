@@ -1,7 +1,7 @@
 """Pydantic models for video generation."""
 
 from pydantic import BaseModel, Field, field_validator
-from typing import List
+from typing import List, Optional
 
 
 class ImageTimestamp(BaseModel):
@@ -9,6 +9,20 @@ class ImageTimestamp(BaseModel):
     
     timestamp: float = Field(..., description="Timestamp in seconds")
     image_path: str = Field(..., description="Local path to the image file")
+    effect: str = Field(
+        default="static",
+        description="Effect to apply during image display (e.g., 'pan_right', 'zoom_in_continuous', 'static')"
+    )
+    effect_intensity: float = Field(
+        default=1.0,
+        ge=0.0,
+        le=2.0,
+        description="Intensity of the effect (0.0 to 2.0, default: 1.0)"
+    )
+    transition_type: Optional[str] = Field(
+        default=None,
+        description="Transition type to use after this image (overrides global transition_type if set)"
+    )
     
     @field_validator('timestamp')
     @classmethod
