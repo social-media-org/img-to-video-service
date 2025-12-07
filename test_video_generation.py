@@ -24,7 +24,7 @@ from app.services.video_generator_service import VideoGeneratorService
 from app.models.video_models import ImageTimestamp
 
 
-def create_test_images(output_dir: str = "/tmp/test_images") -> list[str]:
+def create_test_images(output_dir: str = "./resources/test_images") -> list[str]:
     """Créer 3 images de test colorées avec du texte.
     
     Args:
@@ -103,7 +103,7 @@ def create_test_images(output_dir: str = "/tmp/test_images") -> list[str]:
     return image_paths
 
 
-def test_transition(transition_name: str, image_paths: list[str], output_dir: str = "/tmp/test_videos"):
+def test_transition(transition_name: str, image_paths: list[str], output_dir: str = "./resources/test_videos"):
     """Tester une transition spécifique.
     
     Args:
