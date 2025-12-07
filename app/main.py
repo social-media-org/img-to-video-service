@@ -72,6 +72,8 @@ def create_app() -> FastAPI:
         }
 
     # Include routers
+    from app.routes import video_routes
+    app.include_router(video_routes.router, prefix=settings.api_v1_prefix)
 
     return app
 
