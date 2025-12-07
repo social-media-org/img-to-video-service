@@ -189,7 +189,7 @@ class VideoGeneratorService:
                 raise ValueError(f"Cannot create output directory: {e}")
     
     def _load_images(self, images: List[ImageTimestamp]) -> List[dict]:
-        """Load and prepare all images.
+        """Load and prepare all images (DEPRECATED - kept for compatibility).
         
         Args:
             images: List of ImageTimestamp objects
@@ -214,6 +214,40 @@ class VideoGeneratorService:
             
             # Resize to target resolution
             frame = cv2.resize(frame, self.resolution)
+            
+            frames_data.append({
+                'frame': frame,
+                'timestamp': img.timestamp,
+                'path': img.image_path
+            })
+        
+        return frames_data
+    
+    def _load_images_without_resize(self, images: List[ImageTimestamp]) -> List[dict]:
+        """Load all images without resizing (preserve original dimensions).
+        
+        Images will be resized/cropped by effects later to avoid distortion.
+        
+        Args:
+            images: List of ImageTimestamp objects
+            
+        Returns:
+            List of dictionaries with loaded frames
+        """
+        frames_data = []
+        
+        for img in images:
+            logger.info(f"Loading image: {img.image_path}")
+            
+            # Load image with PIL then convert to numpy array
+            pil_image = Image.open(img.image_path)
+            
+            # Convert to RGB if necessary
+            if pil_image.mode != 'RGB':
+                pil_image = pil_image.convert('RGB')
+            
+            # Convert to numpy array (preserve original size)
+            frame = np.array(pil_image)
             
             frames_data.append({
                 'frame': frame,
