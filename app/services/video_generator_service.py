@@ -1,4 +1,4 @@
-"""Service for generating videos from images with transitions.
+"""Service for generating videos from images with transitions and effects.
 
 This service is designed to be testable independently without launching the API.
 """
@@ -12,6 +12,7 @@ from moviepy import VideoClip, concatenate_videoclips
 from PIL import Image
 
 from app.services.transitions.registry import TransitionRegistry
+from app.services.effects.registry import EffectRegistry
 from app.models.video_models import ImageTimestamp
 from app.core.logging import get_logger
 
