@@ -46,7 +46,7 @@ def main():
     print("🚀 TEST DES NOUVELLES TRANSITIONS MODERNES")
     print("=" * 60)
     
-    output_dir = Path("/app/test_output_transitions")
+    output_dir = Path("./test_output_transitions")
     output_dir.mkdir(exist_ok=True)
     
     print("\n📸 Création des images de test...")
