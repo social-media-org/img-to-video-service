@@ -462,10 +462,10 @@ ease-out-back: overshoot puis retour (effet rebond)
 
 | Style | Transitions Recommandées |
 |-------|--------------------------|
-| **Professionnel/Corporate** | `cross_dissolve`, `fade_to_black` |
-| **TikTok/Instagram** | `flash_white`, `smooth_zoom`, `smooth_slide_left`, `smooth_stretch` |
-| **Cinématique** | `fade_to_black`, `zoom_in`, `zoom_out` |
-| **Moderne/Dynamique** | `flash_white`, `smooth_flip`, `wipe_left` |
+| **Professionnel/Corporate** | `cross_dissolve`, `fade_to_black`, `blur_zoom` |
+| **TikTok/Instagram** | `flash_white`, `smooth_zoom`, `smooth_slide_left`, `smooth_stretch`, `smooth_spin`, `glitch` |
+| **Cinématique** | `fade_to_black`, `zoom_in`, `zoom_out`, `blur_zoom` |
+| **Moderne/Dynamique** | `flash_white`, `smooth_flip`, `wipe_left`, `smooth_spin`, `glitch` |
 | **Présentation** | `cross_dissolve`, `wipe_right`, `wipe_left` |
 
 ### Par Durée Souhaitée
