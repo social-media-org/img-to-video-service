@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import List, Tuple
 import cv2
 import numpy as np
-from moviepy.editor import VideoClip, concatenate_videoclips
+from moviepy import VideoClip, concatenate_videoclips
 from PIL import Image
 
 from app.services.transitions.registry import TransitionRegistry
