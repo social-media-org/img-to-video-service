@@ -21,15 +21,22 @@ logger = get_logger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     # Startup
-    await database.connect_to_mongo()
-    print("✅ Connected to MongoDB Atlas")
+    try:
+        await database.connect_to_mongo()
+        print("✅ Connected to MongoDB Atlas")
+    except Exception as e:
+        print(f"⚠️  MongoDB connection failed (optional): {e}")
+        print("✓ Application will run without MongoDB")
 
     yield
 
     # Shutdown
     logger.info("Shutting down application")
-    await database.close_mongo_connection()
-    print("❌ Disconnected from MongoDB Atlas")
+    try:
+        await database.close_mongo_connection()
+        print("❌ Disconnected from MongoDB Atlas")
+    except:
+        pass
 
 
 def create_app() -> FastAPI:
